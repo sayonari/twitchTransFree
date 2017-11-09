@@ -3,11 +3,11 @@
 ## files ファイル
 |file|explain|
 |:-|:-|
-|README.md           |This file                                 |
-|config.txt          |text file for configulation               |
-|twitchTransGree.py  |python program for Twitch Translate       |
-|twitchTrans_MacOS   |Binary for MacOS for Twitch Translate     |
-|twitchTrans_Win.exe |Binary for Windows for Twitch Translate   |
+|README.md               |This file                                 |
+|config.txt              |text file for configulation               |
+|twitchTransFree.py      |python program for Twitch Translate       |
+|twitchTransFree_MacOS   |Binary for MacOS for Twitch Translate     |
+|twitchTransFree_Win.exe |Binary for Windows for Twitch Translate   |
 
 ## Introduction 説明
 Twitchにて，チャットを自動で翻訳するPythonスクリプトです．
@@ -49,7 +49,7 @@ Twitch_OAUTH    = oauth:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ## USAGE 使い方
 Write the necessary information in config.txt and execute twitchTrans.exe.
 
-config.txtに必要な情報を書き込んで，twitchTrans.exeを実行してください．
+config.txtに必要な情報を書き込んで，twitchTransFree.exeを実行してください．
 
 ## secret 裏技
 If you write `(language code):` at the beginning of the text of the chat, it will be translated into that language.
