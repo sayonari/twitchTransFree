@@ -1,0 +1,8 @@
+Twitch_Channel          = #husband_sayonari_omega
+Twitch_Username         = xxxxxxxxxxxx
+Twitch_TextColor        = GoldenRod
+Default_Language        = ja
+Default_TransLanguage   = en
+
+Twitch_OAUTH    = oauth:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
