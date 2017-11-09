@@ -9,10 +9,31 @@
 |twitchTransFree_MacOS   |Binary for MacOS for Twitch Translate     |
 |twitchTransFree_Win.exe |Binary for Windows for Twitch Translate   |
 
+## First usage まず簡単に使いたい！
+1:緑ボタン「clone or download」を押して，Download ZIPで全部ダウンロード  
+2:解凍して，config.txtのTwitch_Channel を，翻訳したいチャンネルに書き換えて保存．  
+3:twitchTransFree_(yourOS) をダブルクリック  
+以上  
+
+1:Press the green button "clone or download" and download it all with Download ZIP  
+2: Extract and edit config.txt "Twitch_Channel" as a channel you want to translate.  
+3: Double click on "twitchTransFree_(yourOS)"  
+
+that's all  
+
+
 ## Introduction 説明
 Twitchにて，チャットを自動で翻訳するPythonスクリプトです．
 
+今は，設定ファイルにお試しで，翻訳ユーザ(saatan_trans）の設定を入れてあります．  
+独自のアカウントを使いたいときには，AOUTHを取得して，config.txtを書き換えてください．  
+
 This is a Python script to translate the chat text in Twitch automatically.
+
+Currently, translation user (saatan_trans) is put in the setting file.  
+To use your own account, please obtain AOUTH and rewrite config.txt.  
+
+
 
 ## ToDo 必要なもの
 
