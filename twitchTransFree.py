@@ -28,7 +28,7 @@ url = 'https://translate.google.com/'
 
 config = {"Twitch_Channel":"", "Twitch_Username":"", "Twitch_TextColor":"",
             "Default_Language":"", "Default_TransLanguage":"",
-            "Google_API_KEY":"", "Twitch_OAUTH":""}
+            "Google_API_KEY":"", "Twitch_OAUTH":"", "say":""}
 
 # config file loading ########################################
 readfile = 'config.txt'
@@ -122,6 +122,10 @@ def handle_privmsg(irc_server, prefix, receiver, text):
     all_line = ""
     all_line_noaps = ""
 
+    # forbidden check -----------------
+    if "http" in text:
+        return 0
+
     # twitch message ------------------
     twitch_msg = text
     twitch_username = prefix.split("!")[0]
@@ -162,11 +166,34 @@ def handle_privmsg(irc_server, prefix, receiver, text):
         target_text = re.search("TRANSLATED_TEXT=\'(.*?)\'", r.text).group(1)
 
     # print&tts trans text --------
-    all_line = target_text
-    all_line = all_line.replace("&#39;","\'")
+    all_line = html_decode(target_text)
 
     line_send = "/me "  + str(all_line) + " [by_" + str(twitch_username) + "]"
     privmsg(irc_server, config["Twitch_Channel"], line_send)
+
+    # 音声合成出力 ----------------------------------
+    if config["say"] == "True":
+        source_text = re.sub(r'[︰-＠]', " ", source_text) 
+        source_text = re.sub(r'[!-/]', " ", source_text)
+        source_text = re.sub(r'[:-@]', " ", source_text)
+        all_line_noaps = re.sub(r'[︰-＠]', " ", all_line)         # Zenkaku kigou
+        all_line_noaps = re.sub(r'[!-/]', " ", all_line_noaps)    # Hankaku Kigou
+        all_line_noaps = re.sub(r'[:-@]', " ", all_line_noaps)    # Hankaku Kigou
+
+        source_text = re.sub(r'^[¥s　]+$', "", source_text)
+        all_line_noaps = re.sub(r'^[¥s　]+$', "", all_line_noaps)
+
+        source_text = source_text.strip()
+        all_line_noaps = all_line_noaps.strip()
+
+        if source_text:
+            print("[DEBUG] source_lang:" + source_lang + " source_text:" + source_text)
+            say(source_lang, source_text)
+
+        if target_lang and all_line_noaps:
+            print("[DEBUG] target_lang:" + target_lang + " target_text:" + target_text)
+            say(target_lang, all_line_noaps)  
+
 
 
 # wait_message ##########################################
@@ -237,9 +264,26 @@ def say(tl,text):
     else:
         voice = Voice["ja"]
 
-    subprocess.call('say -v' + voice + ' ' + text, shell=True)
+    subprocess.call('say -v ' + voice + ' ' + text, shell=True)
 
-
+# html_decode ################################################
+def html_decode(s):
+    """
+    Returns the ASCII decoded version of the given HTML string. This does
+    NOT remove normal HTML tags like <p>.
+    """
+    htmlCodes = (
+            ("'", '\\x26#39;'),
+            ('"', '\\x26quot;'),
+            ('>', '\\x26gt;'),
+            ('<', '\\x26lt;'),
+            ('&', '\\x26amp;'),
+            ('・', '&#183;'),
+            ('ﾟ', '&#12442;')
+        )
+    for code in htmlCodes:
+        s = s.replace(code[1], code[0])
+    return s
 
 ##############################################################
 # main #######################################################
