@@ -21,6 +21,19 @@
 
 that's all  
 
+## advertise 宣伝
+This software is made for my wife!  
+http://twitch.tv/saatan_pion/  
+If you are satisfied by this software,
+please watch my wife's stream! 
+We are waiting for comming you! and 
+subscribe! donation!
+
+このソフトは，私の妻のために作りました．  
+http://twitch.tv/saatan_pion/  
+もしこのソフトが気に入ったら，私の妻の放送も見てください！
+そして，サブスクライブやドネーションもお待ちしています．
+
 
 ## Introduction 説明
 Twitchにて，チャットを自動で翻訳するPythonスクリプトです．
