@@ -65,20 +65,30 @@ Note: Please login to Twitch as a user who posts the translation result. In the 
 ## config.txt 設定ファイル
 ```
 Twitch_Channel          = #husband_sayonari_omega
-Twitch_Username         = xxxxxxxxxx
+Twitch_Username         = saatan_trans
 Twitch_TextColor        = GoldenRod
 Default_Language        = ja
 Default_TransLanguage   = en
+Show_ByName             = True
 
+# If you use MacOS & set it to `True`, the text will be read by TTS voice!
+say                     = False
+
+# RECOMMEND: get your own OAHTH key, and rewrite to it!
 Twitch_OAUTH    = oauth:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-`Twitch_Channel` : The target chat room for translation.  
-`Twitch_Username` : User who posts translated text (It is better to create new user for translating).  
-`Twitch_TextColor` : Text color of translate text.  
-`Default_Language` : I recommend to set it to native language for streamer.  
-`Default_TransLanguage` : I recommend to set it to the most used language in your chat room.  
-`Twitch_OAUTH` : Twitch OAUTH key, you already get it at Section "Twitch OAUTH key".  
+- `Twitch_Channel` : The target chat room for translation.  
+- `Twitch_Username` : User who posts translated text (It is better to create new user for translating).  
+- `Twitch_TextColor` : Text color of translate text.  
+- `Default_Language` : I recommend to set it to native language for streamer.  
+- `Default_TransLanguage` : I recommend to set it to the most used language in your chat room.  
+- `Show_ByName` : If it is set to `True`, user name is shown after translated text  
+    - example:  
+    - `True` : 12:33 翻訳ちゃん (saatan_trans) テスト [by_husband_sayonari_omega]
+    - `False` : 12:33 翻訳ちゃん (saatan_trans) テスト 
+- `say` : If you use MacOS & set it to `True`, the text will be read by TTS voice!
+- `Twitch_OAUTH` : Twitch OAUTH key, you already get it at Section "Twitch OAUTH key".  
 
 ## USAGE 使い方
 Write the necessary information in config.txt and execute twitchTrans.exe.

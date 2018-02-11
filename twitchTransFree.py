@@ -28,6 +28,7 @@ url = 'https://translate.google.com/'
 
 config = {"Twitch_Channel":"", "Twitch_Username":"", "Twitch_TextColor":"",
             "Default_Language":"", "Default_TransLanguage":"",
+            "Show_ByName":"",
             "Google_API_KEY":"", "Twitch_OAUTH":"", "say":""}
 
 # config file loading ########################################
@@ -168,7 +169,8 @@ def handle_privmsg(irc_server, prefix, receiver, text):
     # print&tts trans text --------
     all_line = html_decode(target_text)
 
-    line_send = "/me "  + str(all_line) + " [by_" + str(twitch_username) + "]"
+    line_send = "/me "  + str(all_line)
+    if config["Show_ByName"]=="True": line_send += " [by_" + str(twitch_username) + "]"
     privmsg(irc_server, config["Twitch_Channel"], line_send)
 
     # 音声合成出力 ----------------------------------

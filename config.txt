@@ -3,6 +3,11 @@ Twitch_Username         = saatan_trans
 Twitch_TextColor        = GoldenRod
 Default_Language        = ja
 Default_TransLanguage   = en
+Show_ByName             = True
 
+# If you use MacOS & set it to `True`, the text will be read by TTS voice!
+say                     = False
+
+# RECOMMEND: get your own OAHTH key, and rewrite to it!
 Twitch_OAUTH    = oauth:0z2hfihfz2mxjshstnrg41h36gj1rp
 
