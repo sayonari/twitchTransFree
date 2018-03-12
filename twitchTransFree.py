@@ -8,6 +8,12 @@ github      : http://github.com/sayonari/twitchTrans
 mail        : sayonari@gmail.com
 '''
 
+
+'''
+TODO:
+- 使うものだけインポート（configを用いて）
+
+'''
 # import modules ###########################################
 # for IRC -------------
 import sys, socket, os
@@ -19,7 +25,28 @@ import re
 # for say ------------
 import subprocess
 
+# for Google TTS & play --------
+from gtts import gTTS
+from playsound import playsound
+import shutil
+import time
+
+# configurte for Google TTS & play
+TMP_DIR = './tmp/'
+tts_cnt = 0
+
+# 作業用ディレクトリ削除 ＆ 作成
+if os.path.exists(TMP_DIR):
+    du = shutil.rmtree(TMP_DIR)
+    time.sleep(0.3)
+
+os.mkdir(TMP_DIR)
+
+# for Unicode charactor check
+import unicodedata
+
 # configure #################################################
+DEBUG = False
 TARGET = "irc.twitch.tv"
 PORT = 6667
 BUF_SIZE = 1024
@@ -29,7 +56,7 @@ url = 'https://translate.google.com/'
 config = {"Twitch_Channel":"", "Twitch_Username":"", "Twitch_TextColor":"",
             "Default_Language":"", "Default_TransLanguage":"",
             "Show_ByName":"",
-            "Google_API_KEY":"", "Twitch_OAUTH":"", "say":""}
+            "Google_API_KEY":"", "Twitch_OAUTH":"", "say":"", "gTTS":""}
 
 # config file loading ########################################
 readfile = 'config.txt'
@@ -64,6 +91,61 @@ Voice = {"en":"Samantha", "it":"Alice", "sv":"Alva", "fr":"Amelie", "de":"Anna",
          "ar":"Maged", "hu":"Mariska", "zh-TW":"Mei-Jia", "el":"Melina", "ru":"Milena", "nb":"Nora", "da":"Sara", "fi":"Satu", 
          "zh-CN":"Ting-Ting", "tr":"Yelda", "ko":"Yuna", "pl":"Zosia", "cs":"Zuzana"}
 
+gTTS_Voice = {
+    'af' : 'Afrikaans',
+    'sq' : 'Albanian',
+    'ar' : 'Arabic',
+    'hy' : 'Armenian',
+    'bn' : 'Bengali',
+    'ca' : 'Catalan',
+    'zh' : 'Chinese',
+    'zh-cn' : 'Chinese (Mandarin/China)',
+    'zh-tw' : 'Chinese (Mandarin/Taiwan)',
+    'zh-yue' : 'Chinese (Cantonese)',
+    'hr' : 'Croatian',
+    'cs' : 'Czech',
+    'da' : 'Danish',
+    'nl' : 'Dutch',
+    'en' : 'English',
+    'en-au' : 'English (Australia)',
+    'en-uk' : 'English (United Kingdom)',
+    'en-us' : 'English (United States)',
+    'eo' : 'Esperanto',
+    'fi' : 'Finnish',
+    'fr' : 'French',
+    'de' : 'German',
+    'el' : 'Greek',
+    'hi' : 'Hindi',
+    'hu' : 'Hungarian',
+    'is' : 'Icelandic',
+    'id' : 'Indonesian',
+    'it' : 'Italian',
+    'ja' : 'Japanese',
+    'km' : 'Khmer (Cambodian)',
+    'ko' : 'Korean',
+    'la' : 'Latin',
+    'lv' : 'Latvian',
+    'mk' : 'Macedonian',
+    'no' : 'Norwegian',
+    'pl' : 'Polish',
+    'pt' : 'Portuguese',
+    'ro' : 'Romanian',
+    'ru' : 'Russian',
+    'sr' : 'Serbian',
+    'si' : 'Sinhala',
+    'sk' : 'Slovak',
+    'es' : 'Spanish',
+    'es-es' : 'Spanish (Spain)',
+    'es-us' : 'Spanish (United States)',
+    'sw' : 'Swahili',
+    'sv' : 'Swedish',
+    'ta' : 'Tamil',
+    'th' : 'Thai',
+    'tr' : 'Turkish',
+    'uk' : 'Ukrainian',
+    'vi' : 'Vietnamese',
+    'cy' : 'Welsh'
+}
 
 received = ""
 
@@ -110,9 +192,9 @@ def quit(irc_server):
 
 # handle_privmsg ##########################################
 def handle_privmsg(irc_server, prefix, receiver, text):
-    print ("")
+    if DEBUG: print ("")
     print (prefix.split('!')[0] + "　>　" + text)
-    print ("")
+    if DEBUG: print ("")
 
     # initialize ----------------------
     target_lang = config["Default_Language"]
@@ -152,7 +234,10 @@ def handle_privmsg(irc_server, prefix, receiver, text):
         }
         r = requests.get(url=url, params=params)
         source_lang = re.search("sl=(.*?)&", r.text).group(1)
-        target_text = re.search("TRANSLATED_TEXT=\'(.*?)\'", r.text).group(1)
+        if re.search("TRANSLATED_TEXT=\'(.*?)\'", r.text):
+            target_text = re.search("TRANSLATED_TEXT=\'(.*?)\'", r.text).group(1)
+        else:
+            target_text = ""
 
     # source = target = "ja"
     if source_lang == config["Default_Language"] and target_lang == config["Default_Language"]:
@@ -174,10 +259,12 @@ def handle_privmsg(irc_server, prefix, receiver, text):
     privmsg(irc_server, config["Twitch_Channel"], line_send)
 
     # 音声合成出力 ----------------------------------
-    if config["say"] == "True":
+    if config["say"] == "True" or config["gTTS"] == "True":
+        source_text = unicodedata.normalize('NFKC', source_text)
         source_text = re.sub(r'[︰-＠]', " ", source_text) 
         source_text = re.sub(r'[!-/]', " ", source_text)
         source_text = re.sub(r'[:-@]', " ", source_text)
+        all_line_noaps = unicodedata.normalize('NFKC', all_line_noaps)
         all_line_noaps = re.sub(r'[︰-＠]', " ", all_line)         # Zenkaku kigou
         all_line_noaps = re.sub(r'[!-/]', " ", all_line_noaps)    # Hankaku Kigou
         all_line_noaps = re.sub(r'[:-@]', " ", all_line_noaps)    # Hankaku Kigou
@@ -189,12 +276,22 @@ def handle_privmsg(irc_server, prefix, receiver, text):
         all_line_noaps = all_line_noaps.strip()
 
         if source_text:
-            print("[DEBUG] source_lang:" + source_lang + " source_text:" + source_text)
-            say(source_lang, source_text)
+            if DEBUG: print("[DEBUG] source_lang:" + source_lang + " source_text:" + source_text)
+            if config["say"] == "True":
+                say(source_lang, source_text)
+            
+            if config["gTTS"] == "True":
+                gTTS_play(source_lang, source_text)
+                
 
         if target_lang and all_line_noaps:
-            print("[DEBUG] target_lang:" + target_lang + " target_text:" + target_text)
-            say(target_lang, all_line_noaps)  
+            if DEBUG: print("[DEBUG] target_lang:" + target_lang + " target_text:" + target_text)
+            if config["say"] == "True":
+                say(target_lang, all_line_noaps)
+            
+            if config["gTTS"] == "True":
+                gTTS_play(target_lang, all_line_noaps)
+
 
 
 
@@ -267,6 +364,25 @@ def say(tl,text):
         voice = Voice["ja"]
 
     subprocess.call('say -v ' + voice + ' ' + text, shell=True)
+
+# gTTS_play: TTS ###################################################
+def gTTS_play(tl,text):
+    global TMP_DIR, tts_cnt, DEBUG
+    if tl in gTTS_Voice.keys():
+        voice = tl
+    else:
+        voice = "ja"
+    
+    tts = gTTS(text=text, lang=voice, slow=False, debug=DEBUG)
+    temp_tts = "{}/tmp_tts_{}.mp3".format(TMP_DIR, tts_cnt)
+    tts.save(temp_tts)
+    try:
+        playsound(temp_tts, True)
+    except:
+        print('エラー起こった at playsound')
+    os.remove(temp_tts)
+    tts_cnt += 1
+
 
 # html_decode ################################################
 def html_decode(s):
