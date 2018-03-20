@@ -1,5 +1,13 @@
-Twitch_Channel          = #husband_sayonari_omega
-Twitch_Username         = saatan_trans
+######################################################
+# PLEASE CHANGE FOLLOWING CONFIGS ####################
+Twitch_Channel          = #xxx_target_channel_name_xxx
+Twitch_Username         = xxx_oauth_user_name_xxx
+
+# Get your own OAUTH key, and rewrite to it!
+Twitch_OAUTH    = oauth:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+#######################################################
+# OPTIONAL CONFIGS ####################################
 Twitch_TextColor        = GoldenRod
 Default_Language        = ja
 Default_TransLanguage   = en
@@ -8,9 +16,5 @@ Show_ByName             = True
 # If you use MacOS & set it to `True`, the text will be read by TTS voice!
 say                     = False
 
-# Any emvironment, text will be read by TTS voice!
-gTTS                    = True
-
-# RECOMMEND: get your own OAHTH key, and rewrite to it!
-Twitch_OAUTH    = oauth:0z2hfihfz2mxjshstnrg41h36gj1rp
-
+# Any emvironment, set it to `True`, then text will be read by TTS voice!
+gTTS                    = False

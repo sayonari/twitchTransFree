@@ -252,7 +252,7 @@ def handle_privmsg(irc_server, prefix, receiver, text):
         target_text = re.search("TRANSLATED_TEXT=\'(.*?)\'", r.text).group(1)
 
     # print&tts trans text --------
-    all_line = html_decode(target_text)
+    all_line = conv(html_decode(target_text))
 
     line_send = "/me "  + str(all_line)
     if config["Show_ByName"]=="True": line_send += " [by_" + str(twitch_username) + "]"
@@ -383,6 +383,12 @@ def gTTS_play(tl,text):
     os.remove(temp_tts)
     tts_cnt += 1
 
+# 数値文字参照（10進数）のデコード ##############################
+def conv(s):
+    cs = s
+    for e in re.findall("&#([0-9]+);", s):
+        cs = cs.replace('&#{};'.format(e), chr(int(e, 10)))
+    return cs
 
 # html_decode ################################################
 def html_decode(s):
