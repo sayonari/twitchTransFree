@@ -51,14 +51,12 @@ TARGET = "irc.twitch.tv"
 PORT = 6667
 BUF_SIZE = 1024
 
-channelID = ""
-roomUUID = ""
-
 url = 'https://translate.google.com/'
 
 config = {"Twitch_Channel":"", "Twitch_Username":"", "Twitch_TextColor":"",
             "Default_Language":"", "Default_TransLanguage":"",
             "Show_ByName":"", "Show_ByLang":"",
+            "channelID":"", "roomUUID":"",
             "Google_API_KEY":"", "Twitch_OAUTH":"", "say":"", "gTTS":""}
 
 # config file loading ########################################
@@ -271,12 +269,12 @@ def handle_privmsg(irc_server, prefix, receiver, text):
 
     line_send = "/me "  + str(all_line)
     if config["Show_ByName"]=="True": line_send += " [by_" + str(twitch_username) + "]"
-    if config["Show_ByLang"]=="True": line_send += "(" + source_lang + ")"
+    if config["Show_ByLang"]=="True": line_send += " (" + source_lang + ")"
 
     # TransRoomName が設定されてたら，そこに投稿する
-    if channelID:
+    if config["channelID"]:
         print('put to ...')
-        privmsg(irc_server, '{}:{}:{}'.format("#chatrooms", channelID, roomUUID), line_send)
+        privmsg(irc_server, '{}:{}:{}'.format("#chatrooms", config["channelID"], config["roomUUID"]), line_send)
     else:
         if DEBUG :
             print('TransRoomName: none')
@@ -386,9 +384,9 @@ def irc_main():
     print("connect OK! : " + channel)
 
     # TransRoomName が設定されてたら，そこに投稿する
-    if channelID:
-        join(irc, '{}:{}:{}'.format("#chatrooms", channelID, roomUUID))
-        privmsg(irc, '{}:{}:{}'.format("#chatrooms", channelID, roomUUID), "/color " + config["Twitch_TextColor"])
+    if config["channelID"]:
+        join(irc, '{}:{}:{}'.format("#chatrooms", config["channelID"], config["roomUUID"]))
+        privmsg(irc, '{}:{}:{}'.format("#chatrooms", config["channelID"], config["roomUUID"]), "/color " + config["Twitch_TextColor"])
         print("connect OK! : " + channel)
 
     wait_message(irc)
