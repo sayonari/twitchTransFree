@@ -78,6 +78,7 @@ Twitch_TextColor        = GoldenRod
 Default_Language        = ja
 Default_TransLanguage   = en
 Show_ByName             = True
+Show_ByLang             = True
 
 # If you use MacOS & set it to `True`, the text will be read by TTS voice!
 say                     = False
@@ -97,6 +98,10 @@ gTTS                    = False
     - example:  
     - `True` : 12:33 翻訳ちゃん (saatan_trans) テスト [by_husband_sayonari_omega]
     - `False` : 12:33 翻訳ちゃん (saatan_trans) テスト 
+- `Show_ByLang` : If it is set to `True`, the source language is shown after translated text  
+    - example:  
+    - `True` : 12:33 翻訳ちゃん (saatan_trans) テスト [by_husband_sayonari_omega](en)
+    - `False` : 12:33 翻訳ちゃん (saatan_trans) テスト [by_husband_sayonari_omega] 
 - `say` : If you use MacOS & set it to `True`, the text will be read by TTS voice!
 - `gTTS` : Any emvironment, text will be read by TTS voice!
 
