@@ -51,11 +51,14 @@ TARGET = "irc.twitch.tv"
 PORT = 6667
 BUF_SIZE = 1024
 
+channelID = ""
+roomUUID = ""
+
 url = 'https://translate.google.com/'
 
 config = {"Twitch_Channel":"", "Twitch_Username":"", "Twitch_TextColor":"",
             "Default_Language":"", "Default_TransLanguage":"",
-            "Show_ByName":"",
+            "Show_ByName":"", "Show_ByLang":"",
             "Google_API_KEY":"", "Twitch_OAUTH":"", "say":"", "gTTS":""}
 
 # config file loading ########################################
@@ -170,6 +173,7 @@ def login(irc_server, nickname, username, realname, hostname = "hostname", serve
 # join ##########################################
 def join(irc_server, channel):
     join_message = "JOIN " + channel + "\n"
+    print(join_message)
 
     irc_server.send(bytes(join_message,"UTF-8"))
 
@@ -183,6 +187,7 @@ def pong(irc_server, daemon, daemon2 = None):
 # privmsg ##########################################
 def privmsg(irc_server, channel, text):
     privmsg_message = "PRIVMSG %s :%s\n" % (channel, text)
+    print(privmsg_message)
 
     irc_server.send(bytes(privmsg_message,"UTF-8"))
 
@@ -192,8 +197,13 @@ def quit(irc_server):
 
 # handle_privmsg ##########################################
 def handle_privmsg(irc_server, prefix, receiver, text):
+     # twitch message ------------------
+    twitch_msg = text
+    twitch_username = prefix.split("!")[0]
+ 
+    # text check -----------------------
     if DEBUG: print ("")
-    print (prefix.split('!')[0] + "　>　" + text)
+    print (twitch_username + "　>　" + twitch_msg)
     if DEBUG: print ("")
 
     # initialize ----------------------
@@ -206,13 +216,15 @@ def handle_privmsg(irc_server, prefix, receiver, text):
     all_line_noaps = ""
 
     # forbidden check -----------------
-    if "http" in text:
+    if "http" in twitch_msg:
         return 0
 
-    # twitch message ------------------
-    twitch_msg = text
-    twitch_username = prefix.split("!")[0]
+    match = re.search('bot$', twitch_username)
+    if match:
+        return 0
     
+    twitch_msg = re.sub(r'ACTION[\s ]*', "", twitch_msg) 
+
     # target language -----------------
     match = re.match('(.{2,5}?):', twitch_msg)
     if match:
@@ -233,7 +245,7 @@ def handle_privmsg(irc_server, prefix, receiver, text):
             "sl": "auto"
         }
         r = requests.get(url=url, params=params)
-        source_lang = re.search("sl=(.*?)&", r.text).group(1)
+        source_lang = re.search("sl=(.*?)[&\"]", r.text).group(1)
         if re.search("TRANSLATED_TEXT=\'(.*?)\'", r.text):
             target_text = re.search("TRANSLATED_TEXT=\'(.*?)\'", r.text).group(1)
         else:
@@ -248,15 +260,28 @@ def handle_privmsg(irc_server, prefix, receiver, text):
             "tl": target_lang
         }
         r = requests.get(url=url, params=params)
-        source_lang = re.search("sl=(.*?)&", r.text).group(1)
-        target_text = re.search("TRANSLATED_TEXT=\'(.*?)\'", r.text).group(1)
+        source_lang = re.search("sl=(.*?)[&\"]", r.text).group(1)
+        if re.search("TRANSLATED_TEXT=\'(.*?)\'", r.text):
+            target_text = re.search("TRANSLATED_TEXT=\'(.*?)\'", r.text).group(1)
+        else:
+            target_text = ""
 
     # print&tts trans text --------
     all_line = conv(html_decode(target_text))
 
     line_send = "/me "  + str(all_line)
     if config["Show_ByName"]=="True": line_send += " [by_" + str(twitch_username) + "]"
-    privmsg(irc_server, config["Twitch_Channel"], line_send)
+    if config["Show_ByLang"]=="True": line_send += "(" + source_lang + ")"
+
+    # TransRoomName が設定されてたら，そこに投稿する
+    if channelID:
+        print('put to ...')
+        privmsg(irc_server, '{}:{}:{}'.format("#chatrooms", channelID, roomUUID), line_send)
+    else:
+        if DEBUG :
+            print('TransRoomName: none')
+        privmsg(irc_server, config["Twitch_Channel"], line_send)
+        
 
     # 音声合成出力 ----------------------------------
     if config["say"] == "True" or config["gTTS"] == "True":
@@ -322,22 +347,31 @@ def wait_message(irc_server):
             command = messages[0]
             params = messages[1:]
 
-            # print("debug(message):",end="")
-            # print(messages)
+            if DEBUG:
+                print("PARAMS:{}".format(params))
+
+            if DEBUG:
+                print("debug(message):",end="")
+                print(messages)
 
             if command == "PING":
                 pong(irc_server, "")
             elif command == "PRIVMSG":
-                text = last_param
-                receiver = ""
+                if params[0] == "#chatrooms":
+                    continue
 
-                for param in params:
-                    receiver = param
+                else:
+                    text = last_param
+                    receiver = ""
 
-                handle_privmsg(irc_server, prefix, receiver, text)
+                    for param in params:
+                        receiver = param
+
+                    handle_privmsg(irc_server, prefix, receiver, text)
 
 # irc_main ##########################################
 def irc_main():
+
     nickname = config["Twitch_Username"]
     username = config["Twitch_Username"]
     realname = config["Twitch_Username"]
@@ -345,12 +379,17 @@ def irc_main():
 
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     irc_connect(irc, TARGET, PORT)
-
     login(irc, nickname, username, realname)
 
     join(irc, channel)
     privmsg(irc, channel, "/color " + config["Twitch_TextColor"])
     print("connect OK! : " + channel)
+
+    # TransRoomName が設定されてたら，そこに投稿する
+    if channelID:
+        join(irc, '{}:{}:{}'.format("#chatrooms", channelID, roomUUID))
+        privmsg(irc, '{}:{}:{}'.format("#chatrooms", channelID, roomUUID), "/color " + config["Twitch_TextColor"])
+        print("connect OK! : " + channel)
 
     wait_message(irc)
 
