@@ -91,7 +91,8 @@ gTTS                    = False
 - `Twitch_Username` : User who posts translated text (It is better to create new user for translating).  
 - `Twitch_OAUTH` : Twitch OAUTH key, you already get it at Section "Twitch OAUTH key".  
 
-- `Twitch_TextColor` : Text color of translate text.  
+- `Twitch_TextColor` : Text color of translate text.
+Currently only the following colors are allowed [ Blue, Coral, DodgerBlue, SpringGreen, YellowGreen, Green, OrangeRed, Red, GoldenRod, HotPink, CadetBlue, SeaGreen, Chocolate, BlueViolet, and Firebrick ]
 - `Default_Language` : I recommend to set it to native language for streamer.  
 - `Default_TransLanguage` : I recommend to set it to the most used language in your chat room.  
 - `Show_ByName` : If it is set to `True`, user name is shown after translated text  
