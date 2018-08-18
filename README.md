@@ -80,11 +80,25 @@ Default_TransLanguage   = en
 Show_ByName             = True
 Show_ByLang             = True
 
+# If you want to use translate only locally, set it to `True`
+NOT_SendToChat          = False
+
+# For use [!sound] command, set it to True.
+# You prepare a directory [sound], and input mp3 files.
+# if the sound name [morimori.mp3], you can use the command [!sound morimori].
+Sound                   = False
+
 # If you use MacOS & set it to `True`, the text will be read by TTS voice!
 say                     = False
 
 # Any emvironment, set it to `True`, then text will be read by TTS voice!
 gTTS                    = False
+
+#######################################################
+# For TLANSLATE ROOM CONFIGS ##########################
+# if you want to use this function, please uncomment out below (remove # mark!)
+#channelID               = XXXXXXXXX
+#roomUUID                = XXXXXXXX-XXXX-XXXX-XXXXXXXXXXXXXXXXX
 ```
 
 - `Twitch_Channel` : The target chat room for translation.  
