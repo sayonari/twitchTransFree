@@ -14,6 +14,9 @@ Default_TransLanguage   = en
 Show_ByName             = True
 Show_ByLang             = True
 
+# If you want to use translate only locally, set it to `True`
+NOT_SendToChat          = False
+
 # For use [!sound] command, set it to True.
 # You prepare a directory [sound], and input mp3 files.
 # if the sound name [morimori.mp3], you can use the command [!sound morimori].

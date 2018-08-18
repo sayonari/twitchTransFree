@@ -8,12 +8,6 @@ github      : http://github.com/sayonari/twitchTrans
 mail        : sayonari@gmail.com
 '''
 
-
-'''
-TODO:
-- 使うものだけインポート（configを用いて）
-
-'''
 # import modules ###########################################
 # for IRC -------------
 import sys, socket, os
@@ -56,6 +50,7 @@ url = 'https://translate.google.com/'
 config = {"Twitch_Channel":"", "Twitch_Username":"", "Twitch_TextColor":"",
             "Default_Language":"", "Default_TransLanguage":"",
             "Show_ByName":"", "Show_ByLang":"",
+            "NOT_SendToChat":"", "Sound":"",
             "channelID":"", "roomUUID":"",
             "Google_API_KEY":"", "Twitch_OAUTH":"", "say":"", "gTTS":""}
 
@@ -78,6 +73,17 @@ for l in lines:
     cnt = cnt+1
 
 f.close()
+
+# fix some config bugs ##########
+
+# miss "#" mark ------
+if not config["Twitch_Channel"].startswith('#'):
+    print("miss # mark! I add '#' to 'config:Twitch_Channel'")
+    config["Twitch_Channel"] = "#" + config["Twitch_Channel"]
+
+
+print(config["Twitch_Channel"])
+
 
 # initialize #################################################
 TargetLangs = ["af", "sq", "am", "ar", "hy", "az", "eu", "be", "bn", "bs", "bg", "ca", "ceb", "ny", "zh-CN", "zh-TW", "co",
@@ -223,6 +229,18 @@ def handle_privmsg(irc_server, prefix, receiver, text):
     
     twitch_msg = re.sub(r'ACTION[\s ]*', "", twitch_msg) 
 
+    # command execution ---------------
+    if config["Sound"] == "True" and re.match('^\!sound ', twitch_msg):
+        sound_name = twitch_msg.strip().split(" ")[1]
+        if DEBUG: print("Play sound: ./sound/{}.mp3".format(sound_name))
+        try:
+            playsound('./sound/{}.mp3'.format(sound_name), True)
+        except:
+            print('エラー起こった at playsound')
+            import traceback
+            traceback.print_exc()
+        return 0
+
     # target language -----------------
     match = re.match('(.{2,5}?):', twitch_msg)
     if match:
@@ -266,19 +284,22 @@ def handle_privmsg(irc_server, prefix, receiver, text):
 
     # print&tts trans text --------
     all_line = conv(html_decode(target_text))
+    print(all_line + "\n")
 
     line_send = "/me "  + str(all_line)
     if config["Show_ByName"]=="True": line_send += " [by_" + str(twitch_username) + "]"
     if config["Show_ByLang"]=="True": line_send += " (" + source_lang + ")"
 
     # TransRoomName が設定されてたら，そこに投稿する
-    if config["channelID"]:
-        print('put to ...')
-        privmsg(irc_server, '{}:{}:{}'.format("#chatrooms", config["channelID"], config["roomUUID"]), line_send)
-    else:
-        if DEBUG :
-            print('TransRoomName: none')
-        privmsg(irc_server, config["Twitch_Channel"], line_send)
+    # NOT_SendToChat が'False'だったら送信する
+    if not config["NOT_SendToChat"]:
+        if config["channelID"]:
+            print('put to ...')
+            privmsg(irc_server, '{}:{}:{}'.format("#chatrooms", config["channelID"], config["roomUUID"]), line_send)
+        else:
+            if DEBUG :
+                print('TransRoomName: none')
+            privmsg(irc_server, config["Twitch_Channel"], line_send)
         
 
     # 音声合成出力 ----------------------------------

@@ -103,6 +103,8 @@ Currently only the following colors are allowed [ Blue, Coral, DodgerBlue, Sprin
     - example:  
     - `True` : 12:33 翻訳ちゃん (saatan_trans) テスト [by_husband_sayonari_omega](en)
     - `False` : 12:33 翻訳ちゃん (saatan_trans) テスト [by_husband_sayonari_omega] 
+- `NOT_SendToChat` : If you want to use translate only locally, set it to `True`
+
 - `say` : If you use MacOS & set it to `True`, the text will be read by TTS voice!
 - `gTTS` : Any emvironment, text will be read by TTS voice!
 
