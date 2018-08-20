@@ -292,7 +292,7 @@ def handle_privmsg(irc_server, prefix, receiver, text):
 
     # TransRoomName が設定されてたら，そこに投稿する
     # NOT_SendToChat が'False'だったら送信する
-    if not config["NOT_SendToChat"]:
+    if not config["NOT_SendToChat"]=="True":
         if config["channelID"]:
             print('put to ...')
             privmsg(irc_server, '{}:{}:{}'.format("#chatrooms", config["channelID"], config["roomUUID"]), line_send)
@@ -300,7 +300,6 @@ def handle_privmsg(irc_server, prefix, receiver, text):
             if DEBUG :
                 print('TransRoomName: none')
             privmsg(irc_server, config["Twitch_Channel"], line_send)
-        
 
     # 音声合成出力 ----------------------------------
     if config["say"] == "True" or config["gTTS"] == "True":
