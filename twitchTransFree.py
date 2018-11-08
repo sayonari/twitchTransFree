@@ -430,7 +430,7 @@ def gTTS_play(tl,text):
     else:
         voice = "ja"
     
-    tts = gTTS(text=text, lang=voice, slow=False, debug=DEBUG)
+    tts = gTTS(text=text, lang=voice, slow=False)
     temp_tts = "{}/tmp_tts_{}.mp3".format(TMP_DIR, tts_cnt)
     tts.save(temp_tts)
     try:
