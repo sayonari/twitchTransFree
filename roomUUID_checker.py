@@ -38,9 +38,7 @@ for l in lines:
     conf_line = l.split('=')
     if conf_line[0].strip() in config.keys():
         config[conf_line[0].strip()] = conf_line[1].strip()        
-    else:
-        print("ERROR: " + conf_line[0].strip() + " is can't use in config.txt [line " + str(cnt) + "]! please check it.")
-        exit()
+
     cnt = cnt+1
 
 f.close()
