@@ -76,5 +76,7 @@ for i,room in enumerate(chat_info['rooms']):
         print(' {:<10}: {}'.format(d, room[d]))
     print('')
 
+# windowsコマンドプロンプトすぐ終わる　に対処
+os.system("pause")
 
 
