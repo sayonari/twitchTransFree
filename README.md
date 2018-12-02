@@ -1,9 +1,17 @@
-# THIS RIPOSITORY IS OLD VER of transbot for twitch.
+# THIS REPOSITORY IS OLD VER of transbot for twitch.
+You　have to get next version of twitchTransFree!!!
+Please click the URL!!
 
 https://github.com/sayonari/twitchTransFreeNext
 
-You　have to get next version of twitchTransFree!!!
-Please click avobe URL!!
+
+# old ver
+
+# this is old ver
+
+# please junp to ...
+
+https://github.com/sayonari/twitchTransFreeNext
 
 
 
