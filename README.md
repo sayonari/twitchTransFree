@@ -9,7 +9,7 @@ https://github.com/sayonari/twitchTransFreeNext
 
 # this is old ver
 
-# please junp to ...
+# please jump to ...
 
 https://github.com/sayonari/twitchTransFreeNext
 
