@@ -1,3 +1,13 @@
+# THIS RIPOSITORY IS OLD VER of transbot for twitch.
+
+https://github.com/sayonari/twitchTransFreeNext
+
+You　have to get next version of twitchTransFree!!!
+Please click avobe URL!!
+
+
+
+
 # Automatic Translator for Twitch Chat
 
 ## files ファイル
@@ -80,33 +90,18 @@ Default_TransLanguage   = en
 Show_ByName             = True
 Show_ByLang             = True
 
-# If you want to use translate only locally, set it to `True`
-NOT_SendToChat          = False
-
-# For use [!sound] command, set it to True.
-# You prepare a directory [sound], and input mp3 files.
-# if the sound name [morimori.mp3], you can use the command [!sound morimori].
-Sound                   = False
-
 # If you use MacOS & set it to `True`, the text will be read by TTS voice!
 say                     = False
 
 # Any emvironment, set it to `True`, then text will be read by TTS voice!
 gTTS                    = False
-
-#######################################################
-# For TLANSLATE ROOM CONFIGS ##########################
-# if you want to use this function, please uncomment out below (remove # mark!)
-#channelID               = XXXXXXXXX
-#roomUUID                = XXXXXXXX-XXXX-XXXX-XXXXXXXXXXXXXXXXX
 ```
 
 - `Twitch_Channel` : The target chat room for translation.  
 - `Twitch_Username` : User who posts translated text (It is better to create new user for translating).  
 - `Twitch_OAUTH` : Twitch OAUTH key, you already get it at Section "Twitch OAUTH key".  
 
-- `Twitch_TextColor` : Text color of translate text.
-Currently only the following colors are allowed [ Blue, Coral, DodgerBlue, SpringGreen, YellowGreen, Green, OrangeRed, Red, GoldenRod, HotPink, CadetBlue, SeaGreen, Chocolate, BlueViolet, and Firebrick ]
+- `Twitch_TextColor` : Text color of translate text.  
 - `Default_Language` : I recommend to set it to native language for streamer.  
 - `Default_TransLanguage` : I recommend to set it to the most used language in your chat room.  
 - `Show_ByName` : If it is set to `True`, user name is shown after translated text  
@@ -117,8 +112,6 @@ Currently only the following colors are allowed [ Blue, Coral, DodgerBlue, Sprin
     - example:  
     - `True` : 12:33 翻訳ちゃん (saatan_trans) テスト [by_husband_sayonari_omega](en)
     - `False` : 12:33 翻訳ちゃん (saatan_trans) テスト [by_husband_sayonari_omega] 
-- `NOT_SendToChat` : If you want to use translate only locally, set it to `True`
-
 - `say` : If you use MacOS & set it to `True`, the text will be read by TTS voice!
 - `gTTS` : Any emvironment, text will be read by TTS voice!
 
